@@ -20,8 +20,11 @@ def recv_command():
         except ValueError:
             continue
 
-
-
+# def get_info():
+#   data = ''
+#   data = data + client_ip[0] + 4*" " + client_ip[1] + 4*" " + os.name
+#   return json.loads(data.decode())
+    
 def create_communication():
     while True:
         command = input(f'~{str(client_ip)}>>: ')

