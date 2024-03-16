@@ -52,7 +52,6 @@ def send_encrypted(data):
     json_data = json.dumps(message)
     client_sock.send(json_data.encode('utf-8'))
 
-       continue
 
 def recv_command():
     data = client_sock.recv(4096).decode('utf-8')  # Increased buffer size for safety
