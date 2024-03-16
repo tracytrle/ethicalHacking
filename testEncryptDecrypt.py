@@ -2,6 +2,8 @@
 
 from Crypto.Cipher import AES
 from secrets import token_bytes
+import json
+import base64
 #from Crypto.Util.Padding import pad, unpad
 #from Crypto.Random import get_random_bytes
 
@@ -21,13 +23,34 @@ def decrypt(nonce, ciphertext, tag):
   except:
     return False
 
+def send_encrypted(data):
+    nonce, ciphertext, tag = encrypt(data)
+    message = {
+        'nonce': base64.b64encode(nonce).decode('utf-8'),
+        'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
+        'tag': base64.b64encode(tag).decode('utf-8')
+    }
+    json_data = json.dumps(message)
+    return json_data
+
+def recv_command(json_data):
+    try:
+        message = json.loads(json_data).rstrip()
+        nonce = base64.b64decode(message['nonce'])
+        ciphertext = base64.b64decode(message['ciphertext'])
+        tag = base64.b64decode(message['tag'])
+        return decrypt(nonce, ciphertext, tag)
+    except ValueError as e:
+        return False
+
 # Example usage
-nonce, ciphertext, tag = encrypt(input('Enter a message: '))
-plaintext = decrypt(nonce, ciphertext, tag)
-print(f'Cipher text: {ciphertext}')
-if not plaintext:
+cmmd = input('Enter a message: ')
+message = send_encrypted(cmmd)
+recv_cmmd = recv_command(message)
+print(f'message: {message}')
+if not recv_cmmd:
   print('Message is corrupted')
 else:
-  print(f'plaintext: {plaintext}')
+  print(f'plaintext: {recv_cmmd}')
 
 
